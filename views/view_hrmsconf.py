@@ -20,7 +20,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from rekrutamentu.forms import FileUploadForm
 from purchase_request.models import *
-from custom.models import RequestSet
+from custom.models import RequestSet, Department,Position
 
 from settingapps.utils import  decrypt_id, encrypt_id
 from django.core.paginator import Paginator
@@ -99,6 +99,24 @@ def hrmsconfrequestset(request,tab,level):
 
 
 def generatelevelandgroup(request):
+    departement = Department.objects.all()
+    position = Position.objects.all()
+    for pos in position.iterator() :
+        for dep in departement.iterator() :
+            strap_position = pos.name.replace(" ", "_")
+            strap_department = dep.name.replace(" ", "_")
+            groupname = str(strap_position)+str("_")+str(strap_department)
+            print(groupname)
+            new_group, created = Group.objects.get_or_create(name=groupname)
+            new_group.save()
+
+
+    for pos in position.iterator() :
+            strap_position = pos.name.replace(" ", "_")
+            groupname = str("Executive")+str("_")+str(strap_position)
+            print(groupname)
+            new_group, created = Group.objects.get_or_create(name=groupname)
+            new_group.save()
 
     return redirect('hrmsconf:hrmsconf')
 
