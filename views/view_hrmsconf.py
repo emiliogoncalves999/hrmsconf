@@ -20,7 +20,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from rekrutamentu.forms import FileUploadForm
 from purchase_request.models import *
-from custom.models import RequestSet, Department,Position
+from custom.models import RequestSet, Department,Position, Category, Level
 
 from settingapps.utils import  decrypt_id, encrypt_id
 from django.core.paginator import Paginator
@@ -30,7 +30,7 @@ from django.utils import timezone
 from datetime import datetime
 
 from django.contrib.auth.models import User, Group
-
+from hrmsconf.forms import RequestSetForm 
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -83,13 +83,48 @@ def hrmsconftab(request,tab):
 
 
 
-def hrmsconfrequestset(request,tab,level):
-    # dadospr = RequestOrder.objects.all().order_by('-id')
-    context = {
+def hrmsconfrequestset(request,tabdata,leveldata):
 
+    form = RequestSetForm()
+
+    print(tabdata)
+    print("purchase_request")
+    # print(requeset)
+    tabkkok = str(tabdata)
+    requeset = ""
+    try : 
+
+        requeset = RequestSet.objects.filter(category__name=tabdata)
+    except Exception.e :
+        print(e)
+    if request.method == 'POST':
+        form = RequestSetForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.level = Level.objects.get(name=leveldata)
+            instance.category =  Category.objects.get(name=tabdata)
+            instance.created_by = User.objects.get(id=request.user.id)
+            try :
+                instance.save()
+                print("susesu")
+                return redirect('hrmsconf:hrmsconfrequestset', tab=tabdata , level=leveldata)
+
+
+            except Exception as e :
+                print(e)
+                print("errror")
+
+        else : 
+            print(str(form))
+            return redirect('hrmsconf:hrmsconfrequestset',tab=tabdata, level=leveldata)
+
+    context = {
+        
         "pajina_hrms_conf" : "active",
-        "tab" : tab,
-        "level" : level,
+        "tab" : tabdata,
+        "requeset" : requeset,
+        "form" : form,
+        "level" : leveldata,
             }
     return render(request, 'hrms_conf/hrmsconfrequestset.html',context)
 
@@ -103,12 +138,16 @@ def generatelevelandgroup(request):
     position = Position.objects.all()
     for pos in position.iterator() :
         for dep in departement.iterator() :
-            strap_position = pos.name.replace(" ", "_")
-            strap_department = dep.name.replace(" ", "_")
-            groupname = str(strap_position)+str("_")+str(strap_department)
-            print(groupname)
-            new_group, created = Group.objects.get_or_create(name=groupname)
-            new_group.save()
+
+            if pos.name == 'Secretario Geral' : 
+                print(position)
+            else : 
+                strap_position = pos.name.replace(" ", "_")
+                strap_department = dep.name.replace(" ", "_")
+                groupname = str(strap_position)+str("_")+str(strap_department)
+                print(groupname)
+                new_group, created = Group.objects.get_or_create(name=groupname)
+                new_group.save()
 
 
     for pos in position.iterator() :

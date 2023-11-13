@@ -1,15 +1,15 @@
 {% extends 'utilizador/layout.html' %}
 {% block content %}
 {% load fegt9_mpg_proteksaun_url %}
-
+{% load crispy_forms_tags %}
 		<!-- ============================================================== -->
 						<!-- pageheader  -->
 						<!-- ============================================================== -->
 						<div class="row">
 							<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
 								<div class="page-header">
-									<h2 class="pageheader-title">Purchase Request Order </h2>
-									<p class="pageheader-text">Nulla euismod urna eros, sit amet scelerisque torton lectus vel mauris facilisis faucibus at enim quis massa lobortis rutrum.</p>
+									<h2 class="pageheader-title">Set {{tab}} level {{level}} </h2>
+									<p class="pageheader-text">Konfigura Purchase request Timeline</p>
 									<div class="page-breadcrumb">
 										<nav aria-label="breadcrumb">
 											<ol class="breadcrumb">
@@ -37,66 +37,49 @@
 											  <!-- recent orders  -->
 								<!-- ============================================================== -->
 								<div class="col-xl-12 col-lg-12 col-md-6 col-sm-12 col-12">
+
 									<div class="card">
 										<h5 class="card-header">Set {{tab}} level {{level}} <a href="{% url 'purchase_request:requestpurchase' %}" class="btn btn-primary btn-sm float-right ">  <i class="far fa-paper-plane"></i> Request purchase</a></h5>      
-                                        
-                                     
+                                   
+
 										<div class="card-body p-0">
+
+											     
+										<table align='center'>
+										<tr><td>            {% crispy form %}</td></td>
+										</table>
+										<hr>
 											<div class="table-responsive">
-												<table class="table table-sm">
+
+										
+                         
+
+
+												<table class=" table-sm" align ='center'>
 													<thead class="bg-light">
 														<tr class="border-0">
 															<th class="border-0">Nu</th>
-															<th class="border-0">Titulu</th>
-															<th class="border-0">Request Date</th>
-													
-															<th class="border-0">Routine</th>
-				
-															<th class="border-0">Em parts</th>
-														
-															<th class="border-0">Is urgent</th>
-															<th class="border-0">Status</th>
+															<th class="border-0">Group</th>
 															<th class="border-0">#</th>
 													
 														</tr>
 													</thead>
 													<tbody>
 
-                                                        {% for dados in dadospr %}
+                                                        {% for dados in requeset %}
 														<tr>
 														
 															<td>{{forloop.counter}}</td>
-															<td>{{dados.title}}</td>
-															<td>{{dados.request_date}}</td>
+															<td>{{dados.group}}</td>
+													
+															<td>
+															
+										  <a href="{% url 'purchase_request:apagaitempurchase' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" >  <i class="fas fa-trash"></i> </a>
+
+
 														
-															<td>{{dados.routine}}</td>
-															<td>{{dados.em_parts}}</td>
-													
-                                                            <td>{{dados.is_urgent}}</td>
-															<td>
-																{% if dados.is_draft %}
-																Draft |     <a href="{% url 'purchase_request:sendpurchaserequest' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" > Send  <i class="far fa-paper-plane"></i>  </a>
-                                                       
-
-																{% else %}
-																<font color="green">Send</font>
-																{% endif %}
-
 															</td>
-													
-															<td>
-
-
-                                                                
-
-                                                             <!-- <a href="{% url 'rekrutamentu:publikavaga' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" >  <i class=" fas fa-volume-up"></i> Publika vaga</a> -->
-                                                             <a href="{% url 'purchase_request:editrequestpurchase' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" >  <i class="fas fa-edit"></i> </a>
-                                                             <!-- <a href="{% url 'rekrutamentu:publikavaga' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" >  <i class="fas fa-trash"></i> </a> -->
-															 <a href="{% url 'purchase_request:detallupurchaserequest' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" >  <i class="fas fa-edit"></i> Detallu Item </a>
-                                                        
-                                                             
-
-                                                            </td>
+			
 														</tr>
                                                         {% endfor %}
 													
