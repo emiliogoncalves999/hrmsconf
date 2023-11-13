@@ -87,15 +87,11 @@ def hrmsconfrequestset(request,tabdata,leveldata):
 
     form = RequestSetForm()
 
-    print(tabdata)
-    print("purchase_request")
-    # print(requeset)
-    tabkkok = str(tabdata)
-    requeset = ""
+ 
     try : 
-
         requeset = RequestSet.objects.filter(category__name=tabdata)
-    except Exception.e :
+    except Exception as e :
+        print("Errror")
         print(e)
     if request.method == 'POST':
         form = RequestSetForm(request.POST)
