@@ -114,11 +114,11 @@
 
 
 
-                                                        {% for dados in dadospr %}
+                                                        {% for dados in level %}
 														<tr>
 														
 															<td>{{forloop.counter}}</td>
-															<td>{{forloop.counter}}</td>
+															<td>{{dados}}</td>
 													
 															<td>
 
@@ -126,7 +126,7 @@
                                                                 
 
                                                              <!-- <a href="{% url 'rekrutamentu:publikavaga' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" >  <i class=" fas fa-volume-up"></i> Publika vaga</a> -->
-                                                             <a href="{% url 'purchase_request:editrequestpurchase' dados.id|encrypt_id_tag %}" class="btn btn-primary btn-sm" >  <i class="fas fa-edit"></i> </a>
+                                                             <a href="{% url 'hrmsconf:hrmsconfrequestset' tab dados %}" class="btn btn-primary btn-sm" >  <i class="fas fa-edit"></i> </a>
 
                                                              
 

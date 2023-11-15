@@ -73,9 +73,11 @@ def hrmsconf(request):
 
 def hrmsconftab(request,tab):
     # dadospr = RequestOrder.objects.all().order_by('-id')
-    context = {
+    level = Level.objects.all()
 
+    context = {
         "pajina_hrms_conf" : "active",
+        "level" : level,
         "tab_"+str(tab): "active",
         "tab" : tab,
             }
@@ -89,7 +91,7 @@ def hrmsconfrequestset(request,tabdata,leveldata):
 
  
     try : 
-        requeset = RequestSet.objects.filter(category__name=tabdata)
+        requeset = RequestSet.objects.filter(category__name=tabdata, level__name=leveldata)
     except Exception as e :
         print("Errror")
         print(e)
@@ -142,8 +144,20 @@ def generatelevelandgroup(request):
                 strap_department = dep.name.replace(" ", "_")
                 groupname = str(strap_position)+str("_")+str(strap_department)
                 print(groupname)
-                new_group, created = Group.objects.get_or_create(name=groupname)
+                new_group, create = Group.objects.get_or_create(name=groupname)
                 new_group.save()
+
+            if pos.name == 'Secretario Geral' : 
+                print(position)
+            else : 
+                strap_position = pos.name.replace(" ", "_")
+                strap_department = dep.name.replace(" ", "_")
+                groupname = str(strap_position)+str("_")+str(strap_department)
+                print(groupname)
+                new_group , create = Level.objects.get_or_create(name=groupname)
+                new_group.created_by = request.user
+                new_group.save()
+      
 
 
     for pos in position.iterator() :
@@ -153,7 +167,31 @@ def generatelevelandgroup(request):
             new_group, created = Group.objects.get_or_create(name=groupname)
             new_group.save()
 
+    for pos in position.iterator() :
+            strap_position = pos.name.replace(" ", "_")
+            groupname = str("Executive")+str("_")+str(strap_position)
+            print(groupname)
+            new_group, created = Level.objects.get_or_create(name=groupname)
+            new_group.created_by = request.user
+            new_group.save()
+
     return redirect('hrmsconf:hrmsconf')
+
+
+
+
+
+
+
+def hrmsconfrequestsetapaga(request,id,tabdata,leveldata):
+    id= decrypt_id(id)
+
+    dados = RequestSet.objects.get(id=id)
+    
+    dados.delete(request.user)
+    
+
+    return redirect('hrmsconf:hrmsconfrequestset' , tabdata=tabdata,leveldata=leveldata)
 
 
 
